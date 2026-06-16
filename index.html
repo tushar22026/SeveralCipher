@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Playground & Cracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <h1 class="glow-text">Crypto<br>Playground</h1>
+            <ul class="nav-links">
+                <li class="active" data-cipher="mono">Monoalphabetic</li>
+                <li data-cipher="playfair">Playfair</li>
+                <li data-cipher="hill">Hill Cipher</li>
+                <li data-cipher="caesar">Caesar Cipher</li>
+                <li data-cipher="vigenere">Vigenère Cipher</li>
+            </ul>
+        </nav>
+
+        <!-- Main Content Workspace -->
+        <main class="workspace">
+            <!-- Monoalphabetic Section -->
+            <section id="mono" class="cipher-section active">
+                <div class="dual-column">
+                    <!-- Controls -->
+                    <div class="column controls">
+                        <h2>Monoalphabetic Cipher</h2>
+                        <label for="mono-input">Input Text:</label>
+                        <textarea id="mono-input" placeholder="Enter text here..."></textarea>
+                        
+                        <label for="mono-key">Substitution Key (26 letters):</label>
+                        <input type="text" id="mono-key" placeholder="ABCDEFGHIJKLMNOPQRSTUVWXYZ">
+                        
+                        <div class="button-group">
+                            <button id="mono-encrypt" class="btn primary">Encrypt</button>
+                            <button id="mono-decrypt" class="btn secondary">Decrypt</button>
+                            <button id="mono-crack" class="btn danger glow-pulse">Crack (Hill Climb)</button>
+                        </div>
+
+                        <label for="mono-output">Output Text:</label>
+                        <textarea id="mono-output" readonly></textarea>
+                        <div class="telemetry-status" id="mono-status"></div>
+                    </div>
+                    
+                    <!-- Visualizer -->
+                    <div class="column visualizer">
+                        <h3>Substitution Map</h3>
+                        <div class="mono-map-container" id="mono-map">
+                            <!-- JS will populate A->X etc. -->
+                        </div>
+                        <div class="crack-results" id="mono-crack-results" style="display:none;">
+                            <h4>Live Crack Results</h4>
+                            <div id="mono-live-text" class="live-text"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Playfair Section -->
+            <section id="playfair" class="cipher-section">
+                <div class="dual-column">
+                    <!-- Controls -->
+                    <div class="column controls">
+                        <h2>Playfair Cipher</h2>
+                        <label for="playfair-input">Input Text:</label>
+                        <textarea id="playfair-input" placeholder="Enter text here..."></textarea>
+                        
+                        <label for="playfair-key">Keyword:</label>
+                        <input type="text" id="playfair-key" placeholder="SECRET">
+                        
+                        <div class="button-group">
+                            <button id="playfair-encrypt" class="btn primary">Encrypt</button>
+                            <button id="playfair-decrypt" class="btn secondary">Decrypt</button>
+                            <button id="playfair-crack" class="btn danger glow-pulse">Dictionary Attack</button>
+                        </div>
+
+                        <label for="playfair-output">Output Text:</label>
+                        <textarea id="playfair-output" readonly></textarea>
+                        <div class="telemetry-status" id="playfair-status"></div>
+                    </div>
+                    
+                    <!-- Visualizer -->
+                    <div class="column visualizer">
+                        <h3>5x5 Grid</h3>
+                        <div class="playfair-grid" id="playfair-grid-ui">
+                            <!-- 25 cells populated by JS -->
+                        </div>
+                        <div class="crack-results" id="playfair-crack-results" style="display:none;">
+                            <h4>Top Results</h4>
+                            <ul id="playfair-top-results"></ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Hill Section -->
+            <section id="hill" class="cipher-section">
+                <div class="dual-column">
+                    <!-- Controls -->
+                    <div class="column controls">
+                        <h2>Hill Cipher (2x2)</h2>
+                        <label for="hill-input">Input Text:</label>
+                        <textarea id="hill-input" placeholder="Enter text here..."></textarea>
+                        
+                        <label>2x2 Key Matrix:</label>
+                        <div class="matrix-input-group">
+                            <input type="number" id="hill-k11" placeholder="k11" value="3">
+                            <input type="number" id="hill-k12" placeholder="k12" value="3">
+                            <input type="number" id="hill-k21" placeholder="k21" value="2">
+                            <input type="number" id="hill-k22" placeholder="k22" value="5">
+                        </div>
+                        
+                        <div class="button-group">
+                            <button id="hill-encrypt" class="btn primary">Encrypt</button>
+                            <button id="hill-decrypt" class="btn secondary">Decrypt</button>
+                            <button id="hill-crack" class="btn danger glow-pulse">Exhaustive Brute-Force</button>
+                        </div>
+
+                        <label for="hill-output">Output Text:</label>
+                        <textarea id="hill-output" readonly></textarea>
+                        <div class="telemetry-status" id="hill-status"></div>
+                    </div>
+                    
+                    <!-- Visualizer -->
+                    <div class="column visualizer">
+                        <h3>Matrix Transformation</h3>
+                        <div class="hill-visualizer">
+                            <div class="matrix-display" id="hill-matrix-display">
+                                <!-- Matrix values shown here -->
+                                <div>[ 3 &nbsp; 3 ]</div>
+                                <div>[ 2 &nbsp; 5 ]</div>
+                            </div>
+                        </div>
+                        <div class="crack-results" id="hill-crack-results" style="display:none;">
+                            <h4>Top 3 Leaderboard</h4>
+                            <ul id="hill-top-results"></ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Caesar Section -->
+            <section id="caesar" class="cipher-section">
+                <div class="dual-column">
+                    <!-- Controls -->
+                    <div class="column controls">
+                        <h2>Caesar Cipher</h2>
+                        <label for="caesar-input">Input Text:</label>
+                        <textarea id="caesar-input" placeholder="Enter text here..."></textarea>
+                        
+                        <label for="caesar-key">Shift Value (1-25):</label>
+                        <input type="number" id="caesar-key" min="1" max="25" value="3">
+                        
+                        <div class="button-group">
+                            <button id="caesar-encrypt" class="btn primary">Encrypt</button>
+                            <button id="caesar-decrypt" class="btn secondary">Decrypt</button>
+                            <button id="caesar-crack" class="btn danger glow-pulse">Brute-Force (25 Keys)</button>
+                        </div>
+
+                        <label for="caesar-output">Output Text:</label>
+                        <textarea id="caesar-output" readonly></textarea>
+                        <div class="telemetry-status" id="caesar-status"></div>
+                    </div>
+                    
+                    <!-- Visualizer -->
+                    <div class="column visualizer">
+                        <h3>Shift Visualization</h3>
+                        <div class="caesar-visualizer" id="caesar-map">
+                            <!-- JS will populate shift mapping -->
+                        </div>
+                        <div class="crack-results" id="caesar-crack-results" style="display:none;">
+                            <h4>Top Results</h4>
+                            <ul id="caesar-top-results"></ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Vigenère Section -->
+            <section id="vigenere" class="cipher-section">
+                <div class="dual-column">
+                    <!-- Controls -->
+                    <div class="column controls">
+                        <h2>Vigenère Cipher</h2>
+                        <label for="vigenere-input">Input Text:</label>
+                        <textarea id="vigenere-input" placeholder="Enter text here..."></textarea>
+                        
+                        <label for="vigenere-key">Keyword:</label>
+                        <input type="text" id="vigenere-key" placeholder="KEYWORD">
+                        
+                        <div class="button-group">
+                            <button id="vigenere-encrypt" class="btn primary">Encrypt</button>
+                            <button id="vigenere-decrypt" class="btn secondary">Decrypt</button>
+                            <button id="vigenere-crack" class="btn danger glow-pulse">Dictionary Attack</button>
+                        </div>
+
+                        <label for="vigenere-output">Output Text:</label>
+                        <textarea id="vigenere-output" readonly></textarea>
+                        <div class="telemetry-status" id="vigenere-status"></div>
+                    </div>
+                    
+                    <!-- Visualizer -->
+                    <div class="column visualizer">
+                        <h3>Key Alignment</h3>
+                        <div class="vigenere-visualizer" id="vigenere-alignment">
+                            <!-- JS will populate key alignment -->
+                        </div>
+                        <div class="crack-results" id="vigenere-crack-results" style="display:none;">
+                            <h4>Top Results</h4>
+                            <ul id="vigenere-top-results"></ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- Inline Blob Workers initialized in app.js -->
+    <script src="app.js"></script>
+</body>
+</html>
